@@ -1,14 +1,15 @@
-import cloudinary from "../config/clooudinary.js";
-const uploadsToCloudinary = async (file) => {
-  try {
-    const result = await cloudinary.uploader.upload(file);
-    return {
-      url: result.secure_url,
-      public_id: result.public_id,
-    };
-  } catch (error) {
-    console.error("Error while uploading to cloudinary", error);
-    throw new Error("Error while uploading to cloudinary");
-  }
+import cloudinary from "../config/cloudinary.js";
+import streamifier from "streamifier";
+const uploadsToCloudinary = async (buffer) => {
+  return new Promise((resolve,reject)=>{
+    const stream =cloudinary.uploader.upload_stream(
+      {folder: "food-del"},
+      (error,result)=>{
+        if(result) resolve(result)
+          else reject(error)
+      }
+    )
+    streamifier.createReadStream(buffer).pipe(stream);
+  })
 };
 export default uploadsToCloudinary;
