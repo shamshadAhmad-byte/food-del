@@ -5,7 +5,7 @@ import { StoreContext } from '../../Context/StoreContext';
 import './Verify.css'
 
 const Verify = () => {
-  const { url } = useContext(StoreContext)
+  const { url, token } = useContext(StoreContext)
   const [searchParams, setSearchParams] = useSearchParams();
   const success = searchParams.get("success")
   const orderId = searchParams.get("orderId")
@@ -13,7 +13,7 @@ const Verify = () => {
   const navigate = useNavigate();
 
   const verifyPayment = async () => {
-    const response = await axios.post(url + "/api/order/verify", { success, orderId });
+    const response = await axios.post(url + "/api/order/verify", { success, orderId }, { headers: { token } });
     if (response.data.success) {
       navigate("/myorders");
     }
